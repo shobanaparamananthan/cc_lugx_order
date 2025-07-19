@@ -2,6 +2,24 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 
+// Automatically create the `orders` table if it doesn't exist
+const createOrdersTable = `
+  CREATE TABLE IF NOT EXISTS orders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_name VARCHAR(100),
+    games VARCHAR(255),
+    total_price DECIMAL(10, 2)
+  )
+`;
+
+db.query(createOrdersTable, (err, result) => {
+  if (err) {
+    console.error(' Failed to create orders table:', err);
+  } else {
+    console.log(' Orders table is ready or already exists');
+  }
+});
+
 // Health check
 router.get('/health', (req, res) => {
   res.send({ status: 'Order Service is running' });
